@@ -3,6 +3,7 @@ import 'package:churashianraffle/guests.dart' as guest_list;
 import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'dart:math';
+import 'package:just_audio/just_audio.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Churashian Day Out Raffle Draw',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -35,10 +37,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var rng = Random();
   late InfiniteScrollController controller;
+  // Set up two players with different audio files
+  final player1 = AudioPlayer();
+  final player2 = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+    setSounds();
     controller = InfiniteScrollController(initialItem: Random().nextInt(1309));
   }
 
@@ -51,6 +57,14 @@ class _MyHomePageState extends State<MyHomePage> {
   var currentId = '';
   var currentRaffle = '';
   var currentImage = '';
+
+  setSounds() async {
+    await player1.setAsset('assets/spin2.mp3');
+    await player2.setAsset('assets/win3.mp3');
+    await player1.setLoopMode(LoopMode.one);
+    await player2.setLoopMode(LoopMode.one);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 200,
                     width: 400,
                     decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(50)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(50)),
                         border: Border.all(color: Colors.black, width: 3)),
                     child: InfiniteCarousel.builder(
                       itemCount: x.length,
@@ -164,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () async {
                             var y = rng.nextInt(1309);
                             controller.animateToItem(y);
-
+                            player1.play();
                             await Future.delayed(
                                 const Duration(milliseconds: 500), () async {
                               y = rng.nextInt(1309);
@@ -256,7 +271,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 });
                               });
                             });
-
+                            player1.stop();
                             x[y]['pos'] = posCounter;
                             posCounter--;
                             // winners.add(x[y]);
@@ -265,6 +280,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             currentId = x[y]['id'].toString();
                             currentRaffle = x[y]['code'].toString();
                             currentImage = x[y]['media_id'].toString();
+                            player2.play();
+                            Future.delayed(Duration(milliseconds: 3675), () {
+                              player2.stop();
+                            });
                             setState(() {});
                           },
                           style: ElevatedButton.styleFrom(
