@@ -1,4 +1,6 @@
 import 'dart:async';
+// import 'package:churashianraffle/Repository/ParticipantRepository.dart';
+import 'package:churashianraffle/Repository/File.dart';
 import 'package:churashianraffle/guests.dart' as guest_list;
 import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
@@ -16,11 +18,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Churashian Day Out Raffle Draw',
+      title: 'Raffle Draw',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'CHURASHIAN DAY OUT 2022'),
+      home: const MyHomePage(title: 'Raffle Draw'),
     );
   }
 }
@@ -44,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    // getParticipants();
+    renameFiles();
     setSounds();
     controller = InfiniteScrollController(initialItem: Random().nextInt(1309));
   }
@@ -51,8 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int posCounter = 20;
   List x = guest_list.guests;
   List winners = [
-    {'name': 'NAME', 'pos': 'POSITION'}
+    {'Full Name': 'NAME', 'pos': 'POSITION'}
   ];
+  int totalParticipants = guest_list.guests.length;
   var currentName = '';
   var currentId = '';
   var currentRaffle = '';
@@ -69,184 +74,182 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.green,
           title: Center(
               child: Text(
             widget.title,
             style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           )),
         ),
-        body: Container(
-          color: const Color(0xFFffd15e),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Row(children: [
-            Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(30.0),
-                      child: Text(
-                        '~ List of Winners ~',
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+        body: SingleChildScrollView(
+          child: Container(
+            color: Colors.green.shade300,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Row(children: [
+              Expanded(
+                  flex: 3,
+                  child: Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(30.0),
+                        child: Text(
+                          '~ List of Winners ~',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
                       ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * .82,
+                        width: MediaQuery.of(context).size.width * .25,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        child: ListView.builder(
+                            itemCount: winners.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ListTile(
+                                  // leading: Text("$index"),
+                                  trailing: Text(
+                                    "${winners[index]['pos']}",
+                                    style: const TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  title: Text(
+                                    "${winners[index]['Full Name']}",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                                  ));
+                            }),
+                      ),
+                    ],
+                  )),
+              Expanded(
+                flex: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      height: 150,
+                      child: Image.asset('assets/raffleheader.png'),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height * .82,
-                      width: MediaQuery.of(context).size.width * .25,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: ListView.builder(
-                          itemCount: winners.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                                // leading: Text("$index"),
-                                trailing: Text(
-                                  "${winners[index]['pos']}",
-                                  style: const TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                      height: 200,
+                      width: 400,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(50)),
+                          border: Border.all(color: Colors.black, width: 3)),
+                      child: InfiniteCarousel.builder(
+                        itemCount: x.length,
+                        itemExtent: 120,
+                        center: true,
+                        anchor: 0.0,
+                        velocityFactor: 0.9,
+                        onIndexChanged: (index) {
+                          // print(index);
+                        },
+                        controller: controller,
+                        axisDirection: Axis.vertical,
+                        loop: true,
+                        itemBuilder: (context, itemIndex, realIndex) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                //height: 300,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(50)),
                                 ),
-                                title: Text(
-                                  "${winners[index]['name']}",
+                                child: Center(
+                                    child: Text(
+                                  '${x[itemIndex]['ID']}',
                                   style: const TextStyle(
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20,
                                   ),
-                                ));
-                          }),
+                                ))),
+                          );
+                        },
+                      ),
                     ),
-                  ],
-                )),
-            Expanded(
-              flex: 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    height: 150,
-                    child: Image.asset('assets/raffleheader.png'),
-                  ),
-                  Container(
-                    height: 200,
-                    width: 400,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(50)),
-                        border: Border.all(color: Colors.black, width: 3)),
-                    child: InfiniteCarousel.builder(
-                      itemCount: x.length,
-                      itemExtent: 120,
-                      center: true,
-                      anchor: 0.0,
-                      velocityFactor: 0.9,
-                      onIndexChanged: (index) {
-                        // print(index);
-                      },
-                      controller: controller,
-                      axisDirection: Axis.vertical,
-                      loop: true,
-                      itemBuilder: (context, itemIndex, realIndex) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                              //height: 300,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(50)),
-                              ),
-                              child: Center(
-                                  child: Text(
-                                '${x[itemIndex]['code']}',
-                                style: const TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ))),
-                        );
-                      },
-                    ),
-                  ),
 
-                  posCounter != 0
-                      ? ElevatedButton(
-                          onPressed: () async {
-                            var y = rng.nextInt(1309);
-                            controller.animateToItem(y);
-                            player1.play();
-                            await Future.delayed(
-                                const Duration(milliseconds: 500), () async {
-                              y = rng.nextInt(1309);
+                    posCounter != 0
+                        ? ElevatedButton(
+                            onPressed: () async {
+                              var y = rng.nextInt(x.length);
                               controller.animateToItem(y);
+                              player1.play();
                               await Future.delayed(
                                   const Duration(milliseconds: 500), () async {
-                                y = rng.nextInt(1309);
+                                y = rng.nextInt(x.length);
                                 controller.animateToItem(y);
                                 await Future.delayed(
                                     const Duration(milliseconds: 500),
                                     () async {
-                                  y = rng.nextInt(1309);
+                                  y = rng.nextInt(x.length);
                                   controller.animateToItem(y);
                                   await Future.delayed(
                                       const Duration(milliseconds: 500),
                                       () async {
-                                    y = rng.nextInt(1309);
+                                    y = rng.nextInt(x.length);
                                     controller.animateToItem(y);
                                     await Future.delayed(
                                         const Duration(milliseconds: 500),
                                         () async {
-                                      y = rng.nextInt(1309);
+                                      y = rng.nextInt(x.length);
                                       controller.animateToItem(y);
                                       await Future.delayed(
                                           const Duration(milliseconds: 500),
                                           () async {
-                                        y = rng.nextInt(1309);
+                                        y = rng.nextInt(x.length);
                                         controller.animateToItem(y);
                                         await Future.delayed(
                                             const Duration(milliseconds: 500),
                                             () async {
-                                          y = rng.nextInt(1309);
+                                          y = rng.nextInt(x.length);
                                           controller.animateToItem(y);
                                           await Future.delayed(
                                               const Duration(milliseconds: 500),
                                               () async {
-                                            y = rng.nextInt(1309);
+                                            y = rng.nextInt(x.length);
                                             controller.animateToItem(y);
                                             await Future.delayed(
                                                 const Duration(
                                                     milliseconds: 500),
                                                 () async {
-                                              y = rng.nextInt(1309);
+                                              y = rng.nextInt(x.length);
                                               controller.animateToItem(y);
                                               await Future.delayed(
                                                   const Duration(
                                                       milliseconds: 500),
                                                   () async {
-                                                y = rng.nextInt(1309);
+                                                y = rng.nextInt(x.length);
                                                 controller.animateToItem(y);
                                                 await Future.delayed(
                                                     const Duration(
                                                         milliseconds: 500),
                                                     () async {
-                                                  y = rng.nextInt(1309);
+                                                  y = rng.nextInt(x.length);
                                                   controller.animateToItem(y);
                                                   await Future.delayed(
                                                       const Duration(
                                                           milliseconds: 500),
                                                       () async {
-                                                    y = rng.nextInt(1309);
+                                                    y = rng.nextInt(x.length);
                                                     controller.animateToItem(y);
                                                     await Future.delayed(
                                                         const Duration(
                                                             milliseconds: 500),
                                                         () async {
-                                                      y = rng.nextInt(1309);
+                                                      y = rng.nextInt(x.length);
                                                       controller
                                                           .animateToItem(y);
                                                       await Future.delayed(
@@ -254,9 +257,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                                               milliseconds:
                                                                   500),
                                                           () async {
-                                                        y = rng.nextInt(1309);
+                                                        y = rng
+                                                            .nextInt(x.length);
                                                         controller
                                                             .animateToItem(y);
+                                                        await Future.delayed(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500),
+                                                            () async {
+                                                          y = rng.nextInt(
+                                                              x.length);
+                                                          controller
+                                                              .animateToItem(y);
+                                                        });
                                                       });
                                                     });
                                                   });
@@ -270,115 +284,96 @@ class _MyHomePageState extends State<MyHomePage> {
                                   });
                                 });
                               });
-                            });
-                            player1.stop();
-                            x[y]['pos'] = posCounter;
-                            posCounter--;
-                            // winners.add(x[y]);
-                            winners.insert(1, x[y]);
-                            currentName = x[y]['name'];
-                            currentId = x[y]['id'].toString();
-                            currentRaffle = x[y]['code'].toString();
-                            currentImage = x[y]['media_id'].toString();
-                            player2.play();
-                            Future.delayed(Duration(milliseconds: 3675), () {
-                              player2.stop();
-                            });
-                            setState(() {});
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              shape: const StadiumBorder(),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 50, vertical: 20),
-                              textStyle: const TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              )),
-                          child: const Text(
-                            'SPIN',
-                          ),
-                        )
-                      : Container(),
-                  // ),
-                ],
+                              player1.stop();
+                              x[y]['pos'] = posCounter.toString();
+                              posCounter--;
+                              // winners.add(x[y]);
+                              winners.insert(1, x[y]);
+                              currentName = x[y]['Full Name'];
+                              currentId = "ID : "+x[y]['ID'].toString();
+                              currentRaffle = x[y]['ID'].toString();
+                              currentImage = x[y]['ID'].toString();
+                              x.remove(x[y]);
+                              print(x.length);
+                              player2.play();
+                              Future.delayed(Duration(milliseconds: 3675), () {
+                                player2.stop();
+                              });
+                              setState(() {});
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.black,
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 50, vertical: 20),
+                                textStyle: const TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                )),
+                            child: const Text(
+                              'SPIN',
+                            ),
+                          )
+                        : Container(),
+                    // ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .3,
-                    child: Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(30.0),
-                          child: Text(
-                            "~ Latest Winner! ~",
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        currentImage == ''
-                            ? Container()
-                            : Container(
-                                margin: const EdgeInsets.all(40),
-                                color: Colors.white,
-                                child: Image.asset("assets/idcard.jpg"),
-                              ),
-                      ],
-                    ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .82,
+                  width: MediaQuery.of(context).size.width * .25,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
-                  currentImage == ''
-                      ? Container()
-                      : Positioned(
-                          top: 625,
-                          left: 96,
-                          child: Text(
-                            currentName,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 22),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Center(child: Text('Winner!',
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold
+                        ),)),
+                        flex: 1,
+                      ),
+                      Expanded(
+                        flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(25.0),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
+                              ),
+                        child: currentImage == ''?Container():Image.asset(
+                              "assets/participant_picture/$currentImage.png"),
+                      ),
                           )),
-                  currentImage == ''
-                      ? Container()
-                      : Positioned(
-                          top: 651,
-                          left: 170,
-                          child: Text(
-                            currentId,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 21),
-                          )),
-                  currentImage == ''
-                      ? Container()
-                      : Positioned(
-                          top: 675,
-                          left: 170,
-                          child: Text(
-                            currentRaffle,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 21),
-                          )),
-                  currentImage == ''
-                      ? Container()
-                      : Positioned(
-                          top: 379,
-                          left: 174,
+                      Expanded(
+                        flex: 2,
                           child: Container(
-                              color: Colors.red,
-                              height: 211,
-                              width: 210,
-                              child: Image.network(
-                                "http://churashianuttara.com/assets/images/$currentImage",
-                                fit: BoxFit.fill,
-                              )),
+                        child: Column(
+                          children: [
+                            Text(currentId,
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold
+                              ),),
+                            Text(currentName,
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold
+                              ),),
+                          ],
                         ),
-                ],
-              ),
-            )
-          ]),
+                      )),
+                    ],
+                  ),
+                  // child: Image.asset('path'),
+                ),
+              )
+            ]),
+          ),
         ));
   }
 }
