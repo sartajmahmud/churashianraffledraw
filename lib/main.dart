@@ -1,5 +1,4 @@
 import 'dart:async';
-// import 'package:churashianraffle/Repository/ParticipantRepository.dart';
 import 'package:churashianraffle/Repository/File.dart';
 import 'package:churashianraffle/guests.dart' as guest_list;
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     controller = InfiniteScrollController(initialItem: Random().nextInt(1309));
   }
 
-  int posCounter = 20;
+  int posCounter = 25;
   List x = guest_list.guests;
   List winners = [
     {'Full Name': 'NAME', 'pos': 'POSITION'}
@@ -322,54 +321,70 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Expanded(
                 flex: 3,
-                child: Container(
-                  height: MediaQuery.of(context).size.height * .82,
-                  width: MediaQuery.of(context).size.width * .25,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Center(child: Text('Winner!',
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold
-                        ),)),
-                        flex: 1,
-                      ),
-                      Expanded(
-                        flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(25.0),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                              ),
-                        child: currentImage == ''?Container():Image.asset(
-                              "assets/participant_picture/$currentImage.png"),
-                      ),
-                          )),
-                      Expanded(
-                        flex: 2,
-                          child: Container(
-                        child: Column(
-                          children: [
-                            Text(currentId,
-                              style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold
-                              ),),
-                            Text(currentName,
-                              style: TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold
-                              ),),
-                          ],
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0,0,35,0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * .82,
+                    width: MediaQuery.of(context).size.width * .22,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Center(child: Text('Winner!',
+                          style: TextStyle(
+                              fontSize: 45, fontWeight: FontWeight.bold,
+                            color: Colors.green
+                          ),)),
+                          flex: 1,
                         ),
-                      )),
-                    ],
+                        Expanded(
+                          flex: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(25.0),
+                              child: Container(
+
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                ),
+                          child: currentImage == ''?Container():Image.asset(
+                                "assets/participant_picture/$currentImage.png"),
+                        ),
+                            )),
+                        Expanded(
+                          flex: 2,
+                            child: Container(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(currentName,
+                                  style: TextStyle(
+                                      fontSize: 30, fontWeight: FontWeight.bold
+                                  ),),
+                              ),
+                              Text(currentId,
+                                style: TextStyle(
+                                    fontSize: 30, fontWeight: FontWeight.bold
+                                ),),
+                              posCounter<25 && posCounter > 1 ?Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Winner of ${posCounter+1} place!",
+                                  style: TextStyle(
+                                      fontSize: 30, fontWeight: FontWeight.bold,
+                                    color: Colors.green
+                                  ),),
+                              ): Container(),
+                            ],
+                          ),
+                        )),
+                      ],
+                    ),
+                    // child: Image.asset('path'),
                   ),
-                  // child: Image.asset('path'),
                 ),
               )
             ]),
